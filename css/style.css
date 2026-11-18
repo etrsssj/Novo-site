@@ -177,15 +177,19 @@ footer{margin-top:40px;padding:64px 0 28px;background:var(--deep);box-shadow:ins
 .stat span{display:block;margin-top:8px;font-size:.82rem;color:var(--muted);line-height:1.4}
 
 /* time */
-.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.tcard{padding:12px 12px 20px;border-radius:24px;background:var(--base);box-shadow:var(--raise)}
-.tcard img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:16px;background:var(--deep)}
-.tbody{padding:16px 10px 0}
-.trole{font-size:.8rem;color:var(--amber);font-weight:600;margin-bottom:4px}
-.tname{font:600 1.1rem var(--f-display);margin-bottom:6px}
-.tdesc{font-size:.88rem;color:var(--muted);line-height:1.55;margin-bottom:14px}
-.tin{display:inline-grid;place-items:center;width:36px;height:36px;border-radius:11px;background:var(--base);box-shadow:var(--raise-sm);color:var(--muted)}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;transition:opacity .18s}
+.team-grid.swap{opacity:0}
+.tcard{padding:8px 8px 16px;border-radius:20px;background:var(--base);box-shadow:var(--raise)}
+.tcard img{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:top;border-radius:14px;background:var(--deep)}
+.tbody{padding:12px 6px 0}
+.trole{font-size:.74rem;color:var(--amber);font-weight:600;margin-bottom:3px;line-height:1.3}
+.tname{font:600 1rem var(--f-display);margin-bottom:6px;line-height:1.25}
+.tdesc{font-size:.8rem;color:var(--muted);line-height:1.5;margin-bottom:12px}
+.tin{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--base);box-shadow:var(--raise-sm);color:var(--muted)}
 .tin:hover{color:var(--amber)}
+.year-bar{display:flex;flex-direction:column;gap:14px;margin-bottom:26px}
+.year-note{font-size:.9rem;color:var(--muted)}
+@media (min-width:1100px){.team-grid{grid-template-columns:repeat(6,1fr);gap:16px}}
 .team-controls{display:none}
 .apply{display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;padding:clamp(28px,4vw,44px)}
 .apply h2{font-size:clamp(1.5rem,3vw,2.1rem);margin-bottom:10px}
@@ -291,7 +295,13 @@ footer{margin-top:40px;padding:64px 0 28px;background:var(--deep);box-shadow:ins
   .team-carousel{margin-top:20px;padding:18px 0 16px;border-radius:26px;background:var(--deep);box-shadow:var(--inset)}
   .team-grid{display:flex;gap:16px;padding:6px 18px 12px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 18px;overscroll-behavior-x:contain;scrollbar-width:none}
   .team-grid::-webkit-scrollbar{display:none}
-  .tcard{flex:0 0 74%;max-width:290px;scroll-snap-align:start}
+  .tcard{flex:0 0 74%;max-width:290px;scroll-snap-align:start;padding:12px 12px 20px;border-radius:24px}
+  .tcard img{border-radius:16px}
+  .tbody{padding:16px 10px 0}
+  .trole{font-size:.8rem}.tname{font-size:1.1rem}.tdesc{font-size:.88rem;margin-bottom:14px}
+  .year-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding:4px 4px 14px;margin:-4px -4px 0}
+  .year-tabs::-webkit-scrollbar{display:none}
+  .year-tabs .chipb{flex:0 0 auto}
   .team-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 18px 0}
   .team-arrow{width:44px;height:44px;border:0;border-radius:14px;background:var(--base);box-shadow:var(--raise-sm);color:var(--amber);font-size:1.4rem;line-height:1}
   .team-arrow:active{box-shadow:var(--inset)}

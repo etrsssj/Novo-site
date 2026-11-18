@@ -261,26 +261,63 @@ window.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.meter').forEach(el => co.observe(el));
 });
 
-/* carrossel da liderança (celular/tablet) */
+/* diretoria por ano + carrossel da liderança (celular/tablet) */
 (function(){
   const grid = document.getElementById('team-grid'); if (!grid) return;
-  const cards = Array.from(grid.querySelectorAll('.tcard')), box = document.getElementById('team-dots'),
-        prev = document.getElementById('team-prev'), next = document.getElementById('team-next');
-  cards.forEach((c, i) => {
-    const d = document.createElement('button'); d.type = 'button'; d.className = 'team-dot'; d.setAttribute('aria-label', 'Ir para o membro ' + (i + 1));
-    d.addEventListener('click', () => grid.scrollTo({ left: c.offsetLeft - grid.offsetLeft - 18, behavior: 'smooth' }));
-    box.appendChild(d);
-  });
-  const dots = Array.from(box.children), step = () => cards[0].getBoundingClientRect().width + 16;
+  const data = window.DIRETORIAS || {}, years = Object.keys(data).map(Number).sort((a, b) => b - a);
+  const tabs = document.getElementById('year-tabs'), note = document.getElementById('year-note'),
+        box = document.getElementById('team-dots'), prev = document.getElementById('team-prev'), next = document.getElementById('team-next');
+  let cards = [], dots = [];
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const root = document.body.dataset.root || '';
+  const step = () => (cards[0] ? cards[0].getBoundingClientRect().width : 0) + 16;
+
+  function cardHTML(m){
+    const li = m.linkedin ? '<a class="tin" href="' + esc(m.linkedin) + '" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn de ' + esc(m.nome) + '"><svg class="ic " aria-hidden="true"><use href="#i-in"/></svg></a>' : '';
+    return '<article class="tcard"><img src="' + root + 'assets/img/' + esc(m.foto) + '" alt="' + esc(m.nome) + '" loading="lazy"><div class="tbody"><div class="trole">' + esc(m.cargo) + '</div><div class="tname">' + esc(m.nome) + '</div><p class="tdesc">' + esc(m.desc) + '</p>' + li + '</div></article>';
+  }
+
   function update(){
-    const max = grid.scrollWidth - grid.clientWidth; let i = Math.round(grid.scrollLeft / step());
+    const max = grid.scrollWidth - grid.clientWidth; let i = step() ? Math.round(grid.scrollLeft / step()) : 0;
     if (grid.scrollLeft >= max - 4) i = cards.length - 1;
     i = Math.max(0, Math.min(cards.length - 1, i));
     dots.forEach((d, j) => d.classList.toggle('active', j === i));
     prev.disabled = grid.scrollLeft <= 4; next.disabled = grid.scrollLeft >= max - 4;
   }
+
+  function buildDots(){
+    box.innerHTML = '';
+    cards.forEach((c, i) => {
+      const d = document.createElement('button'); d.type = 'button'; d.className = 'team-dot'; d.setAttribute('aria-label', 'Ir para o membro ' + (i + 1));
+      d.addEventListener('click', () => grid.scrollTo({ left: c.offsetLeft - grid.offsetLeft - 18, behavior: 'smooth' }));
+      box.appendChild(d);
+    });
+    dots = Array.from(box.children);
+  }
+
+  function render(year){
+    grid.innerHTML = (data[year] || []).map(cardHTML).join('');
+    cards = Array.from(grid.querySelectorAll('.tcard'));
+    grid.scrollLeft = 0; buildDots(); update();
+    if (note) note.textContent = 'Diretoria de ' + year;
+  }
+
+  function select(year){
+    tabs.querySelectorAll('.chipb').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.year === year)));
+    grid.classList.add('swap');
+    setTimeout(() => { render(year); grid.classList.remove('swap'); }, 160);
+  }
+
+  years.forEach((y, k) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chipb'; b.dataset.year = y; b.textContent = y;
+    b.setAttribute('aria-pressed', String(k === 0));
+    b.addEventListener('click', () => { if (b.getAttribute('aria-pressed') !== 'true') select(y); });
+    tabs.appendChild(b);
+  });
+
   prev.addEventListener('click', () => grid.scrollBy({ left: -step(), behavior: 'smooth' }));
   next.addEventListener('click', () => grid.scrollBy({ left: step(), behavior: 'smooth' }));
   grid.addEventListener('scroll', () => requestAnimationFrame(update), { passive: true });
-  addEventListener('resize', update); update();
+  addEventListener('resize', update);
+  if (years.length) render(years[0]);
 })();
